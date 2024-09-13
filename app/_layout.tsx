@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import ItemTransportistaList from '@/components/ItemTransportistaList';
+import ItemTransportistaList from '@/components/transportistas/ItemTransportistaList';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
