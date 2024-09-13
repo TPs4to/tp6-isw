@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.acept-cotiz"
+      "bundleIdentifier": "com.anonymous.aceptcotiz"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.acept-cotiz",
+      "package": "com.anonymous.aceptcotiz",
       "versionCode": 1
     },
     "web": {
