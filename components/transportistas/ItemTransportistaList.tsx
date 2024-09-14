@@ -1,15 +1,12 @@
 import React from "react";
 import { Image, StyleSheet, Platform} from 'react-native';
 
-import {Text, View} from 'react-native';
 import Transportista from "./Transportista";
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Box } from "@/components/ui/box";
 import { HStack } from "../ui/hstack";
 import { GridItem } from "../ui/grid";
 import { VStack } from "../ui/vstack";
 import { Button, ButtonText } from "../ui/button";
+import { Text } from "../ui/text";
 
 
 export default function ItemTransportistaList(transportista: Transportista) {
@@ -20,9 +17,7 @@ export default function ItemTransportistaList(transportista: Transportista) {
         className="border border-border-300 rounded-lg p-4 items-center justify-between"
       >
         <VStack>
-          <Text className="font-semibold text-typography-900 line-clamp-1">
-            {transportista.nombre}
-          </Text>
+          <Text className="font-semibold text-typography-900 line-clamp-1">{transportista.nombre}</Text>
           <Text className="line-clamp-1">
             Calificación: {transportista.calificacion}
           </Text>

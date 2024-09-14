@@ -30,7 +30,7 @@ export default function TransportistaList() {
     return (
       <Grid className="gap-5" _extra={{className: "gap-5"}}>
         {datos.map((item, index) => {
-          return <ItemTransportistaList {...item}/>
+          return <ItemTransportistaList {...item} key={item.uuid}/>
         })}
       </Grid>
     )
