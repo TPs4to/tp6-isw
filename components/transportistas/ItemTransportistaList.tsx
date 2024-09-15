@@ -3,9 +3,14 @@ import { Image, StyleSheet, View, Text, Button } from 'react-native';
 import Transportista from "./Transportista";
 import { Paleta } from "@/constants/Paleta";
 import Calificacion from "./Calificacion";
+import Boton from "../Boton";
 
+interface ItemListaProps {
+  item: Transportista,
+  handleSelect: (item: Transportista) => void
+}
 
-export default function ItemTransportistaList(item: Transportista) {
+export default function ItemTransportistaList({item, handleSelect}: ItemListaProps) {
   return(
     <View key={item.uuid} style={styles.HView}>
       <View style={styles.cell}>
@@ -17,7 +22,7 @@ export default function ItemTransportistaList(item: Transportista) {
       </View>
 
       <View style={styles.cell}>
-        <Button title={"$"+item.precio} color={Paleta.semiDark}/>
+        <Boton texto={"$"+item.precio} onClick={() => {handleSelect(item)}}/>
       </View>
     </View>
   );
@@ -30,7 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    backgroundColor: '#e9e9e9',
+    backgroundColor: '#F5F5F5',
     borderRadius: 5
   },
   cell: {

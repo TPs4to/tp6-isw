@@ -12,14 +12,19 @@ export default function TransportistaList() {
   const [loading, setLoading] = useState<boolean>(true);
 
   async function traerDatos() {
-
     try {
+      setLoading(true);
+      console.log('reload!')
       const response = await axios.get<Transportista[]>('https://mxag8j0yx2.execute-api.sa-east-1.amazonaws.com/api-v1/transportistas');
-      setDatos(response.data)
-      setLoading(false)
+      setDatos(response.data);
+      setLoading(false);
     } catch (error) {
-      console.log("Error al cargar Datos" + error)
+      console.log("Error al cargar Datos: " + error);
     }
+  }
+
+  function handleSelectCotizacion(cotizacion: Transportista) {
+    console.log(cotizacion.nombre)
   }
 
   useEffect(() => {traerDatos()}, [])
@@ -41,9 +46,12 @@ export default function TransportistaList() {
           </View>
         </View>
         <FlatList 
+          onRefresh={() => {setLoading(true); traerDatos()}}
+          refreshing={loading}
           data={datos}
+          style={styles.list}
           renderItem={({item}) => 
-            <ItemTransportistaList {...item} />
+            <ItemTransportistaList item={item} handleSelect={handleSelectCotizacion}/>
           }
         />
       </View>
@@ -76,7 +84,10 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: 'Bogart-Bold',
-    fontSize: 19
+    fontSize: 18
+  },
+  list: {
+    height: '100%'
   },
 
   VDivider: {

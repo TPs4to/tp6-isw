@@ -4,6 +4,8 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Paleta } from "@/constants/Paleta";
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -28,7 +30,7 @@ export default function TabLayout() {
         options={{
           title: 'Lista',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'list' : 'list-outline'} color={color} />
+            <TabBarIcon name={focused ? 'list' : 'list-outline'} color={Paleta.medium} />
           ),
         }}
       />

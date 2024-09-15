@@ -33,7 +33,7 @@ export default function Calificacion(props: PropsCalificacion) {
         style={styles.HView}
         data={estrellas}
         renderItem={({item}) => 
-          <Icono name={item} size={20} color={Paleta.medium}/>
+          <Icono name={item} size={20} color={Paleta.semiDark}/>
         }
       />
     </View>
