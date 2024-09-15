@@ -1,12 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native"
+import { Text, ActivityIndicator, View, StyleSheet } from "react-native"
 import ItemTransportistaList from "./ItemTransportistaList";
 import { FlatList } from "react-native-gesture-handler";
 import Transportista from "./Transportista";
-import { Spinner } from '@/components/ui/spinner';
-import { Grid, GridItem } from "@/components/ui/grid";
-
+import { Paleta } from "@/constants/Paleta";
 
 
 export default function TransportistaList() {
@@ -28,16 +26,71 @@ export default function TransportistaList() {
 
   if (!loading) {
     return (
-      <Grid className="gap-5" _extra={{className: "gap-5"}}>
-        {datos.map((item, index) => {
-          return <ItemTransportistaList {...item} key={item.uuid}/>
-        })}
-      </Grid>
+      <View>
+        <View style={styles.HView}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerTitle}>Nombre</Text>
+          </View>
+          <View style={styles.VDivider}></View>
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerTitle}>Calificación</Text>
+          </View>
+          <View style={styles.VDivider}></View>
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerTitle}>Cotización</Text>
+          </View>
+        </View>
+        <FlatList 
+          data={datos}
+          renderItem={({item}) => 
+            <ItemTransportistaList {...item} />
+          }
+        />
+      </View>
     )
   } else {
     return (
-      <Spinner size="large" />
+      <View>
+        <ActivityIndicator style={styles.spinner} size="large" color={Paleta.medium}/>
+      </View>
     )
   }
-
 }
+
+const styles = StyleSheet.create({
+  spinner: {
+    marginVertical: 100
+  },
+  HView: {
+    flexDirection: 'row',
+    marginTop: 20,
+    alignContent: 'center',
+    marginBottom: 8,
+    width: '100%'
+  },
+  tableHeader: {
+    flex: 1,
+    paddingVertical: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  headerTitle: {
+    fontFamily: 'Bogart-Bold',
+    fontSize: 19
+  },
+
+  VDivider: {
+    height: '90%',
+    width: 1,
+    borderRadius: 3,
+    backgroundColor: '#808080'
+  },
+  HDivider: {
+    marginTop: 3,
+    marginLeft: 20,
+    marginRight: 20,
+    backgroundColor: '#B0B0B0',
+    height: 2,
+    borderRadius: 3
+  }
+});

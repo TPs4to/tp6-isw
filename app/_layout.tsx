@@ -14,7 +14,13 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    
+    'AppleGaramond': require('../assets/fonts/AppleGaramond.ttf'),
+    'AppleGaramound-Bold': require('../assets/fonts/AppleGaramond-Bold.ttf'),
+    'Goudy-Heavyface-Cond-Reg': require('../assets/fonts/Goudy-Heavyface-Cond-Reg.otf'),
+    'CooperFiveOpti-Black': require('../assets/fonts/CooperFiveOpti-Black.otf'),
+    'Bogart-Bold': require('../assets/fonts/Bogart-Bold.ttf'),
+    'Bogart-Medium': require('../assets/fonts/Bogart-Medium.ttf'),
+    'Recoleta-Regular': require('../assets/fonts/Recoleta-Regular.otf')
   });
 
   useEffect(() => {
