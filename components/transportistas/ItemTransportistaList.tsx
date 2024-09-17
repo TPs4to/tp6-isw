@@ -1,8 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, View, Text, Button } from 'react-native';
 import Transportista from "./Transportista";
-import { Paleta } from "@/constants/Paleta";
-import Calificacion from "./Calificacion";
+import Calificacion from "../Calificacion";
 import Boton from "../Boton";
 
 interface ItemListaProps {
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 5,
     justifyContent: 'center',
-    marginHorizontal: 10,
+    marginHorizontal: 9,
   },
   starCell: {
     alignItems: 'center'

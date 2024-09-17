@@ -1,13 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Text, ActivityIndicator, View, StyleSheet } from "react-native"
+import { Text, View, StyleSheet } from "react-native"
 import ItemTransportistaList from "./ItemTransportistaList";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import Transportista from "./Transportista";
-import { Paleta } from "@/constants/Paleta";
+import PopupConfirmacion from "../confirmacion/PopupConfirmacion";
 
+interface PropsLista {
+  selectHandler: (seleccionad: Transportista) => void
+}
 
-export default function TransportistaList() {
+export default function TransportistaList({selectHandler}: PropsLista) {
   const [datos, setDatos] = useState<Transportista[]>([])
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -23,52 +26,38 @@ export default function TransportistaList() {
     }
   }
 
-  function handleSelectCotizacion(cotizacion: Transportista) {
-    console.log(cotizacion.nombre)
-  }
-
   useEffect(() => {traerDatos()}, [])
 
-  if (!loading) {
-    return (
-      <View>
-        <View style={styles.HView}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.headerTitle}>Nombre</Text>
-          </View>
-          <View style={styles.VDivider}></View>
-          <View style={styles.tableHeader}>
-            <Text style={styles.headerTitle}>Calificación</Text>
-          </View>
-          <View style={styles.VDivider}></View>
-          <View style={styles.tableHeader}>
-            <Text style={styles.headerTitle}>Cotización</Text>
-          </View>
+  return (
+    <View style={{backgroundColor: '#FFFFFF'}}>
+      <View style={styles.HView}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.headerTitle}>Nombre</Text>
         </View>
-        <FlatList 
-          onRefresh={() => {setLoading(true); traerDatos()}}
-          refreshing={loading}
-          data={datos}
-          style={styles.list}
-          renderItem={({item}) => 
-            <ItemTransportistaList item={item} handleSelect={handleSelectCotizacion}/>
-          }
-        />
+        <View style={styles.VDivider}></View>
+        <View style={styles.tableHeader}>
+          <Text style={styles.headerTitle}>Calificación</Text>
+        </View>
+        <View style={styles.VDivider}></View>
+        <View style={styles.tableHeader}>
+          <Text style={styles.headerTitle}>Cotización</Text>
+        </View>
       </View>
-    )
-  } else {
-    return (
-      <View>
-        <ActivityIndicator style={styles.spinner} size="large" color={Paleta.medium}/>
-      </View>
-    )
-  }
+      <FlatList 
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={traerDatos}/>
+        }
+        data={datos}
+        style={styles.list}
+        renderItem={({item}) => 
+          <ItemTransportistaList item={item} handleSelect={selectHandler}/>
+        }
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  spinner: {
-    marginVertical: 100
-  },
   HView: {
     flexDirection: 'row',
     marginTop: 20,

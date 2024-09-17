@@ -6,16 +6,23 @@ import { View, StyleSheet, Text } from "react-native";
 
 interface BotonProps {
   texto: string,
-  onClick: () => void
+  onClick: () => void,
+  txtStyle?: any,
+  disabled?: boolean
 }
 
-export default function Boton({texto, onClick}: BotonProps) {
+export default function Boton({texto, onClick, txtStyle, disabled}: BotonProps) {
   return (
     <Pressable 
-      style={({pressed}) => [styles.button, pressed ? styles.click : {}]} 
+      disabled={disabled}
+      style={({pressed}) => [
+        styles.button, 
+        pressed ? styles.click : {}, 
+        disabled ? styles.disabled : {}
+      ]} 
       onPress={() => onClick()}
     >
-      <Text style={styles.text}>{texto}</Text>
+      <Text style={[styles.text, txtStyle]}>{texto}</Text>
     </Pressable>
   );
 }
@@ -34,5 +41,8 @@ const styles = StyleSheet.create({
   },
   click: { 
     backgroundColor: Paleta.medium
+  }, 
+  disabled: {
+    backgroundColor: '#D0D0D0'
   } 
 });

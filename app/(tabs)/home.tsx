@@ -11,7 +11,7 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#c79a48' }}
       headerImage={
         <Image
-          source={require('@/assets/images/truck-crop.png')}
+          source={require('@/assets/images/truck.gif')}
           style={styles.reactLogo}
         />
       }>
