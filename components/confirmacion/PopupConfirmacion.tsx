@@ -18,13 +18,16 @@ interface PropsPopup {
 export default function PopupConfirmacion({seleccionado, onClose, onAccept}: PropsPopup) {
   const snapPoints = useMemo(() => ['50%'], []);
   const sheetRef = useRef<BottomSheet>(null);
-  const handleClose = () => sheetRef.current?.close();
-  const handleOpen = () => sheetRef.current?.expand();
   
   const renderFondo = useCallback(
     (props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />,
     []
   );
+
+  function accept() {
+    //sheetRef.current?.close();
+    onAccept();
+  }
 
   return (
     <BottomSheet 
@@ -80,7 +83,7 @@ export default function PopupConfirmacion({seleccionado, onClose, onAccept}: Pro
         </View>
 
         <View style={styles.btnContainer}>
-          <Boton texto='Aceptar' txtStyle={styles.button} onClick={onAccept}/>
+          <Boton texto='Continuar' txtStyle={styles.button} onClick={accept}/>
         </View>
       </View>
     </BottomSheet>

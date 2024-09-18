@@ -5,12 +5,25 @@ import { Paleta } from "@/constants/Paleta";
 import constants from "expo-constants";
 import PopupConfirmacion from "@/components/confirmacion/PopupConfirmacion";
 import Transportista from "@/components/transportistas/Transportista";
-import FormDatosPago from "@/components/confirmacion/FormDatosPago";
+import FormDatosPago, { CardInfo } from "@/components/confirmacion/FormDatosPago";
+import ValidacionPago from "@/components/confirmacion/ValidacionPago";
+import { CreditCardFormData } from "react-native-credit-card-input";
 
+enum Screen {
+  LIST,
+  PAYMENT,
+  CONFIRMATION
+}
 
 export default function Lista() {
   const [seleccionado, setSeleccionado] = useState<Transportista | null>(null);
   const [frmPagoActive, setFrmPagoActive] = useState<boolean>(false);
+  const [validacionPago, setValidacionPago] = useState<boolean>(false);
+
+  const [screen, setScreen] = useState<Screen>(Screen.LIST);
+
+  const [cardData, setCardData] = useState<CardInfo>();
+  const [metodo, setMetodo] = useState<string>();
 
   function handleSeleccion(selec: Transportista) {
     setSeleccionado(selec);
@@ -20,15 +33,21 @@ export default function Lista() {
     setSeleccionado(null);
   }
 
-  function handleAccept() {
-    setFrmPagoActive(true);
+  function handleContinue() {
+    setScreen(Screen.PAYMENT);
+  }
+
+  function handleAccept(metodo: string, cardData?: CardInfo) {
+    setScreen(Screen.CONFIRMATION);
+    setMetodo(metodo);
+    setCardData(cardData);
   }
 
   function list() {
     return (
       <>
         <TransportistaList selectHandler={handleSeleccion}/>
-        { seleccionado ? <PopupConfirmacion seleccionado={seleccionado} onClose={handleCancel} onAccept={handleAccept} /> : null}
+        { seleccionado ? <PopupConfirmacion seleccionado={seleccionado} onClose={handleCancel} onAccept={handleContinue} /> : null}
       </>
     );
   }
@@ -43,20 +62,23 @@ export default function Lista() {
         
         <View style={styles.VDivider}></View>
         <Text style={styles.headerTitle}>
-          {frmPagoActive ? 'Pago' : 'Cotizaciones'}
+          {screen === Screen.LIST ? 'Cotizaciones' : 'Pago'}
         </Text>
       </View>
 
       <View style={styles.HDivider}></View>
 
-      {!frmPagoActive && 
+      {screen === Screen.LIST && 
         <>
           <TransportistaList selectHandler={handleSeleccion}/>
-          { seleccionado ? <PopupConfirmacion seleccionado={seleccionado} onClose={handleCancel} onAccept={handleAccept} /> : null}
+          { seleccionado ? <PopupConfirmacion seleccionado={seleccionado} onClose={handleCancel} onAccept={handleContinue} /> : null }
         </>
       }
 
-      {frmPagoActive && seleccionado && <FormDatosPago seleccionado={seleccionado}/>}
+      {screen === Screen.PAYMENT && seleccionado && <FormDatosPago seleccionado={seleccionado} handleAccept={handleAccept}/>}
+      {screen === Screen.CONFIRMATION && seleccionado && metodo &&
+        <ValidacionPago metodoPago={metodo} cardData={cardData} />
+      }
     </View>
   );
 }

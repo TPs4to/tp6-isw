@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Paleta } from "@/constants/Paleta";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text, Image, KeyboardAvoidingView } from "react-native";
 import Transportista from "../transportistas/Transportista";
 import Calificacion from "../Calificacion";
 import Boton from "../Boton";
@@ -9,12 +9,20 @@ import { CreditCardFormData, CreditCardFormField, CreditCardInput, CreditCardVie
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Icons from 'react-native-credit-card-input/src/Icons';
 
-
-interface PropsFormPago {
-  seleccionado: Transportista
+export interface CardInfo {
+  nombre?: string,
+  numero?: string,
+  vencimiento?: string,
+  cvc?: string,
+  tipo?: string
 }
 
-export default function FormDatosPago({seleccionado}: PropsFormPago) {
+interface PropsFormPago {
+  seleccionado: Transportista,
+  handleAccept: (metodo: string, cardData?: CardInfo) => void
+}
+
+export default function FormDatosPago({seleccionado, handleAccept}: PropsFormPago) {
   const [metodoPago, setMetodoPago] = useState<string>('0');
   const [formFilled, setFormFilled] = useState<boolean>(false);
   const [formValid, setFormValid] = useState<boolean>(false);
@@ -46,99 +54,125 @@ export default function FormDatosPago({seleccionado}: PropsFormPago) {
     setFormValid(Boolean(data.valid && cardName));
   }
 
+  function aceptar() {
+    if (metodoPago === 'Tarjeta') {
+      handleAccept(metodoPago, {
+        nombre: cardName,
+        numero: cardData?.values.number,
+        vencimiento: cardData?.values.expiry,
+        cvc: cardData?.values.cvc,
+        tipo: cardData?.values.type
+      })
+    } else {
+      handleAccept(metodoPago)
+    }
+  }
+
   return (
-    <ScrollView style={styles.mainContainer}>
-      <View>
-        <Text style={styles.name}>{seleccionado.nombre}</Text>
-        <Calificacion calificacion={seleccionado.calificacion} />
-      </View>
-
-      <View style={styles.dateContainer}>
-        <View style={styles.dateView}>
-          <Text style={styles.dateText}>Retiro el</Text>
-          <Text>{seleccionado.fecha_retiro}</Text>
+    <KeyboardAvoidingView behavior="padding">
+      <ScrollView style={styles.mainContainer}>
+        <View>
+          <Text style={styles.name}>{seleccionado.nombre}</Text>
+          <Calificacion calificacion={seleccionado.calificacion} />
         </View>
 
-        <Image 
-          source={require('@/assets/images/truck_anim.gif')}
-          style={styles.truck}
-        />
-
-        <View style={styles.dateView}>
-          <Text style={styles.dateText}>Llega el</Text>
-          <Text>{seleccionado.fecha_entrega}</Text>
-        </View>
-      </View>
-
-      <View style={styles.importe}>
-        <Text style={styles.importeText}>Importe: </Text>
-        <Text style={styles.importeNumber}>${seleccionado.precio}</Text>
-      </View>
-
-      <Text style={styles.importeText}>Formas de pago: </Text>
-      <View style={styles.radioView}>
-        <RadioGroup 
-          containerStyle={styles.radioContainer}
-          radioButtons={metodosList}
-          onPress={changeMetodoPago}
-          selectedId={metodoPago}
-        />
-      </View>
-
-      {metodoPago === 'Tarjeta' &&
-        <View style={{ marginTop: 13 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
-            <View style={{ marginHorizontal: 15, alignSelf: 'stretch', flexGrow: 1 }}>
-              <Text style={styles.cardLabel}>NOMBRE EN LA TARJETA</Text>
-              <TextInput 
-                placeholderTextColor={'darkgray'}
-                autoCapitalize = {"characters"}
-                style={styles.cardInput} 
-                placeholder="Juan Lopez"
-                onChangeText={setCardname}
-                maxLength={26}
-                autoCorrect={false}
-              >
-              </TextInput>
-            </View>
-
-            {(cardData?.values.type === 'mastercard' || cardData?.values.type === 'visa') &&
-              <Image 
-                style={styles.icon}
-                source={{ uri: Icons[cardData?.values.type] }}
-              />
-            }
+        <View style={styles.dateContainer}>
+          <View style={styles.dateView}>
+            <Text style={styles.dateText}>Retiro el</Text>
+            <Text>{seleccionado.fecha_retiro}</Text>
           </View>
 
-          <CreditCardInput
-            inputStyle={styles.cardInput} 
-            labelStyle={styles.cardLabel}
-            labels={labels} 
-            placeholders={placeholders}
-            onChange={cardInput}
+          <Image 
+            source={require('@/assets/images/truck_anim.gif')}
+            style={styles.truck}
           />
-          
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={[styles.errorPill, (!cardName || cardName.length < 1) ? styles.show : styles.none]}>
-              <Text style={styles.error}>Nombre</Text>
-            </View>
-            <View style={[styles.errorPill, cardData?.status.number !== 'valid' ? styles.show : styles.none]}>
-              <Text style={styles.error}>Numero</Text>
-            </View>
-            <View style={[styles.errorPill, cardData?.status.expiry !== 'valid' ? styles.show : styles.none]}>
-              <Text style={styles.error}>Vencimiento</Text>
-            </View>
-            <View style={[styles.errorPill, cardData?.status.cvc !== 'valid' ? styles.show : styles.none]}>
-              <Text style={styles.error}>CVC</Text>
-            </View>
+
+          <View style={styles.dateView}>
+            <Text style={styles.dateText}>Llega el</Text>
+            <Text>{seleccionado.fecha_entrega}</Text>
           </View>
         </View>
-      }
 
-      <View style={styles.btnContainer}>
-        <Boton texto={`Aceptar${metodoPago === 'Tarjeta' ? ' y Pagar' : ''}`} txtStyle={styles.button} disabled={!formValid} onClick={() => {}}/>
-      </View>
-    </ScrollView>
+        <View style={styles.importe}>
+          <Text style={styles.importeText}>Importe: </Text>
+          <Text style={styles.importeNumber}>${seleccionado.precio}</Text>
+        </View>
+
+        <Text style={styles.importeText}>Formas de pago: </Text>
+        <View style={styles.radioView}>
+          <RadioGroup 
+            containerStyle={styles.radioContainer}
+            radioButtons={metodosList}
+            onPress={changeMetodoPago}
+            selectedId={metodoPago}
+          />
+        </View>
+
+        {metodoPago === 'Tarjeta' &&
+          <View style={{ marginTop: 3 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
+              <View style={{ marginHorizontal: 15, alignSelf: 'stretch', flexGrow: 1 }}>
+                <Text style={styles.cardLabel}>NOMBRE EN LA TARJETA</Text>
+                <TextInput 
+                  placeholderTextColor={'darkgray'}
+                  autoCapitalize = {"characters"}
+                  style={styles.cardInput} 
+                  placeholder="Juan Lopez"
+                  onChangeText={setCardname}
+                  maxLength={26}
+                  autoCorrect={false}
+                >
+                </TextInput>
+              </View>
+
+              {(cardData?.values.type === 'mastercard' || cardData?.values.type === 'visa') &&
+                <Image 
+                  style={styles.icon}
+                  source={{ uri: Icons[cardData?.values.type] }}
+                />
+              }
+            </View>
+
+            <CreditCardInput
+              inputStyle={styles.cardInput} 
+              labelStyle={styles.cardLabel}
+              labels={labels} 
+              placeholders={placeholders}
+              onChange={cardInput}
+            />
+            
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={[styles.errorPill, (!cardName || cardName.length < 1) ? styles.show : styles.none]}>
+                <Text style={styles.error}>Nombre</Text>
+              </View>
+              <View style={[styles.errorPill, cardData?.status.number !== 'valid' ? styles.show : styles.none]}>
+                <Text style={styles.error}>Numero</Text>
+              </View>
+              <View style={[styles.errorPill, cardData?.status.expiry !== 'valid' ? styles.show : styles.none]}>
+                <Text style={styles.error}>Vencimiento</Text>
+              </View>
+              <View style={[styles.errorPill, cardData?.status.cvc !== 'valid' ? styles.show : styles.none]}>
+                <Text style={styles.error}>CVC</Text>
+              </View>
+            </View>
+            <View style={{ alignItems: 'flex-start', marginTop: 5 }}>
+              <View style={[styles.warningPill, cardData?.status.number === 'valid' && !(cardData.values.type === 'visa' || cardData.values.type === 'mastercard') ? styles.show : styles.none]}>
+                <Text style={styles.error}>No se acepta {cardData?.values.type}</Text>
+              </View>
+            </View>
+          </View>
+        }
+
+        <View style={styles.btnContainer}>
+          <Boton 
+            texto={`Aceptar${metodoPago === 'Tarjeta' ? ' y Pagar' : ''}`} 
+            txtStyle={styles.button} 
+            disabled={!formValid} 
+            onClick={aceptar}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -249,6 +283,13 @@ const styles = StyleSheet.create({
   }, 
   error: {
     color: 'black'
+  },
+  warningPill: {
+    backgroundColor: '#fac020',
+    padding: 2,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    marginLeft: 5
   },
   errorPill: {
     backgroundColor: '#ff7070',
