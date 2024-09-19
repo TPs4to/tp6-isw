@@ -8,15 +8,16 @@ interface BotonProps {
   texto: string,
   onClick: () => void,
   txtStyle?: any,
+  btnStyle?: any,
   disabled?: boolean
 }
 
-export default function Boton({texto, onClick, txtStyle, disabled}: BotonProps) {
+export default function Boton({texto, onClick, txtStyle, disabled, btnStyle}: BotonProps) {
   return (
     <Pressable 
       disabled={disabled}
       style={({pressed}) => [
-        styles.button, 
+        styles.button, btnStyle,
         pressed ? styles.click : {}, 
         disabled ? styles.disabled : {}
       ]} 

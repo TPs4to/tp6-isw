@@ -27,6 +27,7 @@
         <data android:scheme="myapp"/>
         <data android:scheme="com.anonymous.aceptcotiz"/>
         <data android:scheme="exp+acept-cotiz"/>
+        <data android:scheme="exp+tangoapp"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>
