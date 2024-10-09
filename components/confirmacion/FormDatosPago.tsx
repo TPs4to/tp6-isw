@@ -8,6 +8,7 @@ import { RadioGroup } from "react-native-radio-buttons-group";
 import { CreditCardFormData, CreditCardFormField, CreditCardInput, CreditCardView, LiteCreditCardInput } from "react-native-credit-card-input";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Icons from 'react-native-credit-card-input/src/Icons';
+import DropDownPicker from "react-native-dropdown-picker";
 
 export interface CardInfo {
   nombre?: string,
@@ -28,6 +29,9 @@ export default function FormDatosPago({seleccionado, handleAccept}: PropsFormPag
   const [formValid, setFormValid] = useState<boolean>(false);
   const [cardData, setCardData] = useState<CreditCardFormData>();
   const [cardName, setCardname] = useState<string>();
+  const [document, setDocument] = useState<String>();
+  const [docType, setDocType] = useState<any>(null);
+  const [docTypeOpen, setDocTypeOpen] = useState<boolean>(false);
 
   const metodosList = useMemo(() => {
     return seleccionado.tipos_pago.map(tipo => ({
@@ -51,8 +55,12 @@ export default function FormDatosPago({seleccionado, handleAccept}: PropsFormPag
   function cardInput(data: CreditCardFormData) {
     setCardData(data);
     setFormFilled(true);
-    setFormValid(Boolean(data.valid && cardName));
+    setFormValid(Boolean(data.valid && cardName && document));
   }
+
+  useEffect(() => {
+    setFormValid(Boolean(cardData?.valid && cardName && document))
+  }, [document, cardName])
 
   function aceptar() {
     if (metodoPago === 'Tarjeta') {
@@ -110,12 +118,40 @@ export default function FormDatosPago({seleccionado, handleAccept}: PropsFormPag
 
         {metodoPago === 'Tarjeta' &&
           <View style={{ marginTop: 3 }}>
+
+            <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
+              <View style={{ marginHorizontal: 15, alignSelf: 'stretch', flexGrow: 1, marginBottom: 10 }}>
+                <Text style={styles.cardLabel}>NUMERO DE DOCUMENTO</Text>
+                <TextInput 
+                  placeholderTextColor={'darkgray'}
+                  autoCapitalize = {'characters'}
+                  style={styles.cardInput} 
+                  placeholder="12345678"
+                  onChangeText={setDocument}
+                  maxLength={26}
+                  autoCorrect={false}
+                >
+                </TextInput>
+              </View>
+            {/*
+              <DropDownPicker
+                value={docType}
+                items={[
+                  {label: 'DNI', value: 'DNI'}
+                ]}
+                setOpen={setDocTypeOpen}
+                open={docTypeOpen}
+                setValue={setDocType}
+              />
+            */}
+            </View>
+
             <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
               <View style={{ marginHorizontal: 15, alignSelf: 'stretch', flexGrow: 1 }}>
                 <Text style={styles.cardLabel}>NOMBRE EN LA TARJETA</Text>
                 <TextInput 
                   placeholderTextColor={'darkgray'}
-                  autoCapitalize = {"characters"}
+                  autoCapitalize = {'characters'}
                   style={styles.cardInput} 
                   placeholder="Juan Lopez"
                   onChangeText={setCardname}
@@ -124,7 +160,6 @@ export default function FormDatosPago({seleccionado, handleAccept}: PropsFormPag
                 >
                 </TextInput>
               </View>
-
               {(cardData?.values.type === 'mastercard' || cardData?.values.type === 'visa') &&
                 <Image 
                   style={styles.icon}
@@ -142,7 +177,10 @@ export default function FormDatosPago({seleccionado, handleAccept}: PropsFormPag
             />
             
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <View style={[styles.errorPill, (!cardName || cardName.length < 1) ? styles.show : styles.none]}>
+              <View style={[styles.errorPill, (!document || document.length < 1) ? styles.show : styles.none]}>
+                <Text style={styles.error}>Documento</Text>
+              </View>
+             <View style={[styles.errorPill, (!cardName || cardName.length < 1) ? styles.show : styles.none]}>
                 <Text style={styles.error}>Nombre</Text>
               </View>
               <View style={[styles.errorPill, cardData?.status.number !== 'valid' ? styles.show : styles.none]}>
