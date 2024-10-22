@@ -55,14 +55,18 @@ export default function ValidacionPago({ cardData, metodoPago, transportista, ha
   }, []);
 
   async function processPayment() {
-    await delay(rnd(1000, 3000));
-    if (emptyCards.includes(cardData?.numero!)) {
-      await delay(1000);
-      setScreenState(ScreenState.ERROR);
-    } else {
-      setScreenState(ScreenState.OK);
-      setTransacID(String(rnd(100000000, 999999999)));
-      sendAccept();
+    try {
+      await delay(rnd(1000, 3000));
+      if (emptyCards.includes(cardData?.numero!)) {
+        await delay(1000);
+        setScreenState(ScreenState.ERROR);
+      } else {
+        setScreenState(ScreenState.OK);
+        setTransacID(String(rnd(100000000, 999999999)));
+        sendAccept();
+      }
+    } catch {
+
     }
   }
 
